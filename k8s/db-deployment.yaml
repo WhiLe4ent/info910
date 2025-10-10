@@ -1,20 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mydb-deployment
+  name: note-manager-db-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mydb
+      app: note-manager-db
   template:
     metadata:
       labels:
-        app: mydb
+        app: note-manager-db
     spec:
       containers:
-      - name: mydb
-        image: mydb:1.0
+      - name: note-manager-db
+        image: note-manager-db:latest
+        imagePullPolicy: Never
         ports:
         - containerPort: 3306
         env:

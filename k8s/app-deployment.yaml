@@ -1,25 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: myapp-deployment
+  name: note-manager-app-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: myapp
+      app: note-manager-app
   template:
     metadata:
       labels:
-        app: myapp
+        app: note-manager-app
     spec:
       containers:
-      - name: myapp
-        image: mynode-app:1.0
+      - name: note-manager-app
+        image: note-manager-app:latest
+        imagePullPolicy: Never
         ports:
         - containerPort: 3000
         env:
         - name: DB_HOST
-          value: "mydb-service"
+          value: "note-manager-db-service"
         - name: DB_USER
           value: "user"
         - name: DB_PASSWORD

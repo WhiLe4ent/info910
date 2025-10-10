@@ -34,12 +34,165 @@ Le projet est composé de trois parties principales :
 
 ## Prérequis
 
+### Pour Kubernetes (Minikube)
+- **Minikube** : Version 1.25 ou supérieure
+- **kubectl** : Version compatible avec votre cluster Kubernetes
+- **Docker** : Pour construire les images localement
+
+### Pour Docker Compose
 - **Docker** : Version 20.10 ou supérieure
 - **Docker Compose** : Version 1.29 ou supérieure
 
 ## Installation et Démarrage
 
-### Méthode 1 : Avec Docker Compose (Recommandé)
+### Méthode 1 : Avec Minikube (Kubernetes) - Recommandé
+
+#### 🚀 Déploiement automatique avec scripts
+
+Pour simplifier le déploiement, des scripts automatisés sont disponibles :
+
+**Linux/Mac :**
+```bash
+# Rendre les scripts exécutables
+chmod +x scripts/*.sh
+
+# Déployer l'application
+./scripts/deploy.sh
+
+# Voir le statut de l'application
+./scripts/status.sh
+
+# Redémarrer l'application
+./scripts/restart.sh
+
+# Arrêter l'application (garde Minikube actif)
+./scripts/stop.sh
+
+# Supprimer complètement l'application et arrêter Minikube
+./scripts/delete.sh
+```
+
+---
+
+#### 📋 Déploiement manuel étape par étape
+
+#### 1️⃣ Démarrer Minikube
+
+```bash
+minikube start
+```
+
+Vérifier que le cluster tourne :
+```bash
+kubectl get nodes
+```
+
+---
+
+#### 2️⃣ Utiliser le Docker de Minikube
+
+Se connecter au docker de minikube :
+```bash
+# Linux/Mac
+eval $(minikube docker-env)
+
+# Windows (PowerShell)
+& minikube -p minikube docker-env --shell powershell | Invoke-Expression
+```
+
+---
+
+#### 3️⃣ Construire les images Docker
+
+**Application Node.js :**
+```bash
+cd app
+docker build -t note-manager-app:latest .
+```
+
+**Base de données MySQL :**
+```bash
+cd ../database
+docker build -t note-manager-db:latest .
+```
+
+Vérifier que les images sont bien présentes :
+```bash
+docker images
+```
+
+Vous devriez voir :
+```
+REPOSITORY           TAG       IMAGE ID       CREATED         SIZE
+note-manager-app     latest    ...            ...             ...
+note-manager-db      latest    ...            ...             ...
+```
+
+---
+
+#### 4️⃣ Déployer sur Kubernetes
+
+Depuis la racine du projet :
+
+```bash
+kubectl apply -f k8s/db-deployment.yaml
+kubectl apply -f k8s/db-service.yaml
+kubectl apply -f k8s/app-deployment.yaml
+kubectl apply -f k8s/app-service.yaml
+```
+
+---
+
+#### 5️⃣ Vérifier le déploiement
+
+Vérifier que les pods sont en cours d'exécution :
+```bash
+kubectl get pods
+```
+
+Vérifier les services :
+```bash
+kubectl get services
+```
+
+---
+
+#### 6️⃣ Accéder à l'application
+
+Obtenir l'URL du service :
+```bash
+minikube service note-manager-service --url
+```
+
+Ou ouvrir directement dans le navigateur :
+```bash
+minikube service note-manager-service
+```
+
+L'application sera accessible via l'URL fournie.
+
+---
+
+#### 7️⃣ Arrêter et nettoyer
+
+Supprimer tous les déploiements :
+```bash
+kubectl delete -f k8s/
+```
+
+Arrêter Minikube :
+```bash
+minikube stop
+```
+
+Supprimer complètement le cluster (optionnel) :
+```bash
+minikube delete
+```
+
+---
+
+### Méthode 2 : Avec Docker Compose
 
 1. **Clonez le projet** (si ce n'est pas déjà fait) :
    ```bash
@@ -57,11 +210,12 @@ Le projet est composé de trois parties principales :
 
 4. **Arrêter l'application** :
    ```bash
-   # Appuyez sur Ctrl+C dans le terminal, puis :
    docker compose down -v
    ```
 
-### Méthode 2 : Développement local (sans Docker)
+---
+
+### Méthode 3 : Développement local (sans Docker)
 
 #### Prérequis supplémentaires
 - Node.js (version 14 ou supérieure)
@@ -112,7 +266,17 @@ info910/
 ├── database/
 │   ├── init.sql            # Script d'initialisation de la base de données
 │   └── Dockerfile          # Configuration Docker pour MySQL
-├──  .yml      # Orchestration des services
+├── k8s/
+│   ├── app-deployment.yaml     # Deployment de l'application
+│   ├── app-service.yaml        # Service de l'application
+│   ├── db-deployment.yaml      # Deployment de la base de données
+│   └── db-service.yaml         # Service de la base de données
+├── scripts/
+│   ├── deploy.sh           # Script de déploiement automatique
+│   ├── stop.sh             # Script d'arrêt de l'application
+│   ├── restart.sh          # Script de redémarrage
+│   └── delete.sh           # Script de suppression des ressources
+├── docker-compose.yml      # Orchestration Docker Compose
 └── README.md               # Ce fichier
 ```
 
@@ -138,297 +302,3 @@ Les variables suivantes peuvent être configurées dans le fichier ` .yml` :
 - `DB_PASSWORD` : Mot de passe de la base de données (par défaut : `password`)
 - `DB_NAME` : Nom de la base de données (par défaut : `mydb`)
 - `PORT` : Port du serveur Node.js (par défaut : `3000`)
-
-## Utilisation de Markdown
-
-Note Manager supporte le format Markdown pour la rédaction de vos notes. Voici quelques exemples de syntaxe :
-
-### Titres
-```markdown
-# Titre niveau 1
-## Titre niveau 2
-### Titre niveau 3
-```
-
-### Formatage de texte
-```markdown
-**Texte en gras**
-*Texte en italique*
-`Code inline`
-```
-
-### Listes
-```markdown
-- Item 1
-- Item 2
-  - Sous-item
-
-1. Premier élément
-2. Deuxième élément
-```
-
-### Code
-```markdown
-\`\`\`javascript
-function hello() {
-  console.log("Hello World!");
-}
-\`\`\`
-```
-
-### Liens et images
-```markdown
-[Texte du lien](https://example.com)
-![Alt text](url-de-image.jpg)
-```
-
-### Autres
-```markdown
-> Citation
-
----
-Séparateur horizontal
-
-| Colonne 1 | Colonne 2 |
-|-----------|-----------|
-| Données   | Données   |
-```
-
-Pour prévisualiser votre Markdown, cliquez simplement sur le bouton **"Preview"** dans l'éditeur. Cliquez sur **"Edit"** pour revenir en mode édition.
-
-## Technologies Utilisées
-
-- **Frontend** : HTML5, CSS3, JavaScript (Vanilla JS), Marked.js (rendu Markdown)
-- **Backend** : Node.js, Express.js
-- **Base de données** : MySQL 8.0
-- **Conteneurisation** : Docker, Docker Compose
-
-## Contribution
-
-Pour contribuer au projet :
-
-1. Créez une branche pour votre fonctionnalité
-2. Effectuez vos modifications
-3. Testez l'application
-4. Soumettez une pull request
-
-## Licence
-
-Ce projet est à but éducatif.
-
-
-# 🌐 Déploiement d'une application Node.js + MariaDB sur Kubernetes avec Minikube
-
-Ce projet montre comment déployer une petite application **Node.js** avec une **base de données MariaDB** sur un **cluster Kubernetes local** à l’aide de **Minikube**.
-
----
-
-## 🧩 Structure du projet
-
-.
-├── app/                   # Application Node.js
-│   ├── Dockerfile
-│   ├── server.js
-│   ├── package.json
-│   └── public/
-├── database/              # Base de données MariaDB
-│   ├── Dockerfile
-│   └── init.sql
-├── k8s/                   # Manifests Kubernetes
-│   ├── app-deployment.yaml
-│   ├── app-service.yaml
-│   ├── db-deployment.yaml
-│   └── db-service.yaml
-└── README.md
-
----
-
-## ⚙️ Prérequis
-
-- Linux
-- Docker
-- kubectl
-- Minikube
-
----
-
-## 🚀 Étapes de déploiement
-
-### 1️⃣ Démarrer Minikube
-
-``` 
-minikube start
-``` 
-
-Vérifier que le cluster tourne :
-```
-kubectl get nodes
-```
----
-
-### 2️⃣ Utiliser le Docker de Minikube
-
-Se connecter au docker de minikube :
-``` 
-eval $(minikube docker-env)
-``` 
-
----
-
-### 3️⃣ Construire les images Docker
-
-#### 🧱 Application Node.js
-``` 
-cd app
-docker build -t mynode-app:1.0 .
-``` 
-
-#### 🧱 Base de données MariaDB
-``` 
-cd ../database
-docker build -t mydb:1.0 .
-``` 
-
-Vérifier que les images sont bien présentes :
-``` 
-docker images
-``` 
-
-On dois voir :
-``` 
-REPOSITORY     TAG       IMAGE ID       CREATED         SIZE
-mynode-app     1.0       ...            ...             ...
-mydb           1.0       ...            ...             ...
-``` 
----
-
-### 4️⃣ Déployer sur Kubernetes
-
-Depuis la racine du projet :
-
-``` 
-kubectl apply -f k8s/db-deployment.yaml
-kubectl apply -f k8s/db-service.yaml
-kubectl apply -f k8s/app-deployment.yaml
-kubectl apply -f k8s/app-service.yaml
-``` 
-
----
-
-### 5️⃣ Vérifier le déploiement
-
-Lister les Pods :
-``` 
-kubectl get pods
-``` 
-
-On dois voir quelque chose comme :
-``` 
-NAME                                READY   STATUS    RESTARTS   AGE
-myapp-deployment-7fc5dd877-fmj77    1/1     Running   0          2m
-mydb-deployment-648c4dfd7-dhtbk     1/1     Running   0          2m
-``` 
-
-Et les Services :
-``` 
-kubectl get services
-``` 
-
-Exemple :
-``` 
-NAME             TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
-myapp-service    NodePort    10.111.175.27   <none>        3000:30080/TCP   2m
-mydb-service     ClusterIP   None            <none>        3306/TCP         2m
-``` 
-
----
-
-### 6️⃣ Accéder à l’application
-
-Ouvrir l'app dans le navigateur :
-``` 
-minikube service myapp-service
-``` 
-
----
-
-### 7️⃣ (Optionnel) Inspecter les logs
-
-Pour voir les logs de l'app :
-``` 
-kubectl logs -f deployment/myapp-deployment
-``` 
-
----
-
-### 8️⃣ (Optionnel) Se connecter à la base de données
-
-Entrer dans le pod de la base :
-``` 
-kubectl exec -it deployment/mydb-deployment -- bash
-``` 
-
-Installer un client SQL :
-``` 
-apt-get update && apt-get install -y mariadb-client
-``` 
-
-Se connecter :
-``` 
-mysql -h localhost -u user -ppassword mydb
-``` 
----
-
-### 9️⃣ Supprimer tout le déploiement
-
-Pour repartir de zéro :
-``` 
-kubectl delete -f k8s/
-``` 
-
-Ou tout le cluster :
-``` 
-minikube delete
-``` 
-
----
-
-## 🧠 Résumé du fonctionnement
-
-| Élément | Rôle |
-|----------|------|
-| Minikube | Lance un cluster Kubernetes local |
-| kubectl | Envoie les commandes et manifeste YAML au cluster |
-| Deployment | Gère le nombre de Pods et leurs redémarrages |
-| Service | Permet aux Pods de communiquer entre eux et vers l’extérieur |
-| Dockerfile | Définit comment construire les images exécutées dans les Pods |
-
----
-
-## ✅ Résultat attendu
-
-L'application Node.js est accessible sur :
-👉 http://{ip}:30080 (ou via
-``` 
- minikube service myapp-service
-``` 
-)
-
-La base de données MariaDB tourne dans un autre Pod, accessible via le nom DNS :
-```
-mydb-service
-```
----
-
-## 🧩 Notes
-
-Pour scale :
-```
-  kubectl scale deployment myapp-deployment --replicas=3
-  ```
-  Cela lancera 3 instances (Pods) de l'app.
-
----
-
-👨‍💻 Auteur : Achille et Elias
-📚 Projet Kubernetes - M2 Informatique - INFO910
