@@ -49,7 +49,7 @@ Le projet est composé de trois parties principales :
 
 2. **Démarrez l'application** :
    ```bash
-   docker-compose up --build
+   docker compose up --build -d
    ```
 
 3. **Accédez à l'application** :
@@ -58,7 +58,7 @@ Le projet est composé de trois parties principales :
 4. **Arrêter l'application** :
    ```bash
    # Appuyez sur Ctrl+C dans le terminal, puis :
-   docker-compose down
+   docker compose down -v
    ```
 
 ### Méthode 2 : Développement local (sans Docker)
@@ -112,7 +112,7 @@ info910/
 ├── database/
 │   ├── init.sql            # Script d'initialisation de la base de données
 │   └── Dockerfile          # Configuration Docker pour MySQL
-├── docker-compose.yml      # Orchestration des services
+├──  .yml      # Orchestration des services
 └── README.md               # Ce fichier
 ```
 
@@ -130,7 +130,7 @@ info910/
 
 ### Variables d'environnement
 
-Les variables suivantes peuvent être configurées dans le fichier `docker-compose.yml` :
+Les variables suivantes peuvent être configurées dans le fichier ` .yml` :
 
 - `DB_HOST` : Hôte de la base de données (par défaut : `database`)
 - `DB_PORT` : Port de la base de données (par défaut : `3306`)
@@ -215,3 +215,220 @@ Pour contribuer au projet :
 ## Licence
 
 Ce projet est à but éducatif.
+
+
+# 🌐 Déploiement d'une application Node.js + MariaDB sur Kubernetes avec Minikube
+
+Ce projet montre comment déployer une petite application **Node.js** avec une **base de données MariaDB** sur un **cluster Kubernetes local** à l’aide de **Minikube**.
+
+---
+
+## 🧩 Structure du projet
+
+.
+├── app/                   # Application Node.js
+│   ├── Dockerfile
+│   ├── server.js
+│   ├── package.json
+│   └── public/
+├── database/              # Base de données MariaDB
+│   ├── Dockerfile
+│   └── init.sql
+├── k8s/                   # Manifests Kubernetes
+│   ├── app-deployment.yaml
+│   ├── app-service.yaml
+│   ├── db-deployment.yaml
+│   └── db-service.yaml
+└── README.md
+
+---
+
+## ⚙️ Prérequis
+
+- Linux
+- Docker
+- kubectl
+- Minikube
+
+---
+
+## 🚀 Étapes de déploiement
+
+### 1️⃣ Démarrer Minikube
+
+``` 
+minikube start
+``` 
+
+Vérifier que le cluster tourne :
+```
+kubectl get nodes
+```
+---
+
+### 2️⃣ Utiliser le Docker de Minikube
+
+Se connecter au docker de minikube :
+``` 
+eval $(minikube docker-env)
+``` 
+
+---
+
+### 3️⃣ Construire les images Docker
+
+#### 🧱 Application Node.js
+``` 
+cd app
+docker build -t mynode-app:1.0 .
+``` 
+
+#### 🧱 Base de données MariaDB
+``` 
+cd ../database
+docker build -t mydb:1.0 .
+``` 
+
+Vérifier que les images sont bien présentes :
+``` 
+docker images
+``` 
+
+On dois voir :
+``` 
+REPOSITORY     TAG       IMAGE ID       CREATED         SIZE
+mynode-app     1.0       ...            ...             ...
+mydb           1.0       ...            ...             ...
+``` 
+---
+
+### 4️⃣ Déployer sur Kubernetes
+
+Depuis la racine du projet :
+
+``` 
+kubectl apply -f k8s/db-deployment.yaml
+kubectl apply -f k8s/db-service.yaml
+kubectl apply -f k8s/app-deployment.yaml
+kubectl apply -f k8s/app-service.yaml
+``` 
+
+---
+
+### 5️⃣ Vérifier le déploiement
+
+Lister les Pods :
+``` 
+kubectl get pods
+``` 
+
+On dois voir quelque chose comme :
+``` 
+NAME                                READY   STATUS    RESTARTS   AGE
+myapp-deployment-7fc5dd877-fmj77    1/1     Running   0          2m
+mydb-deployment-648c4dfd7-dhtbk     1/1     Running   0          2m
+``` 
+
+Et les Services :
+``` 
+kubectl get services
+``` 
+
+Exemple :
+``` 
+NAME             TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+myapp-service    NodePort    10.111.175.27   <none>        3000:30080/TCP   2m
+mydb-service     ClusterIP   None            <none>        3306/TCP         2m
+``` 
+
+---
+
+### 6️⃣ Accéder à l’application
+
+Ouvrir l'app dans le navigateur :
+``` 
+minikube service myapp-service
+``` 
+
+---
+
+### 7️⃣ (Optionnel) Inspecter les logs
+
+Pour voir les logs de l'app :
+``` 
+kubectl logs -f deployment/myapp-deployment
+``` 
+
+---
+
+### 8️⃣ (Optionnel) Se connecter à la base de données
+
+Entrer dans le pod de la base :
+``` 
+kubectl exec -it deployment/mydb-deployment -- bash
+``` 
+
+Installer un client SQL :
+``` 
+apt-get update && apt-get install -y mariadb-client
+``` 
+
+Se connecter :
+``` 
+mysql -h localhost -u user -ppassword mydb
+``` 
+---
+
+### 9️⃣ Supprimer tout le déploiement
+
+Pour repartir de zéro :
+``` 
+kubectl delete -f k8s/
+``` 
+
+Ou tout le cluster :
+``` 
+minikube delete
+``` 
+
+---
+
+## 🧠 Résumé du fonctionnement
+
+| Élément | Rôle |
+|----------|------|
+| Minikube | Lance un cluster Kubernetes local |
+| kubectl | Envoie les commandes et manifeste YAML au cluster |
+| Deployment | Gère le nombre de Pods et leurs redémarrages |
+| Service | Permet aux Pods de communiquer entre eux et vers l’extérieur |
+| Dockerfile | Définit comment construire les images exécutées dans les Pods |
+
+---
+
+## ✅ Résultat attendu
+
+L'application Node.js est accessible sur :
+👉 http://{ip}:30080 (ou via
+``` 
+ minikube service myapp-service
+``` 
+)
+
+La base de données MariaDB tourne dans un autre Pod, accessible via le nom DNS :
+```
+mydb-service
+```
+---
+
+## 🧩 Notes
+
+Pour scale :
+```
+  kubectl scale deployment myapp-deployment --replicas=3
+  ```
+  Cela lancera 3 instances (Pods) de l'app.
+
+---
+
+👨‍💻 Auteur : Achille et Elias
+📚 Projet Kubernetes - M2 Informatique - INFO910
