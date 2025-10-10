@@ -78,11 +78,11 @@ echo "Services disponibles:"
 kubectl get services
 echo ""
 
-# 8. Ouverture de l'application
+# 8. Informations d'accès
 echo "============================================"
 echo "✨ Déploiement terminé avec succès!"
 echo "============================================"
 echo ""
-echo "🌐 Ouverture de l'application dans le navigateur..."
-minikube service note-manager-service
+echo "Pour accéder à l'application, utilisez:"
+echo "  minikube service note-manager-service"
 echo ""

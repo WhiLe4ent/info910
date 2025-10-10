@@ -12,8 +12,7 @@ echo ""
 
 echo "⚠️  ATTENTION: Cette action va:"
 echo "   - Supprimer tous les déploiements Kubernetes"
-echo "   - Supprimer complètement le cluster Minikube"
-echo "   - Effacer toutes les données et images Docker"
+echo "   - Arrêter le cluster Minikube"
 echo ""
 read -p "Voulez-vous continuer? (y/N) " -n 1 -r
 echo ""
@@ -32,15 +31,14 @@ echo "📌 Étape 2: Arrêt de Minikube..."
 minikube stop
 
 echo ""
-echo "📌 Étape 3: Suppression complète du cluster Minikube..."
-minikube delete
-
-echo ""
 echo "============================================"
 echo "✅ Suppression terminée avec succès!"
 echo "============================================"
 echo ""
-echo "Le cluster Minikube a été complètement supprimé."
+echo "Minikube a été arrêté."
+echo ""
+echo "Pour supprimer complètement le cluster, utilisez:"
+echo "  minikube delete"
 echo ""
 echo "Pour redémarrer l'application plus tard:"
 echo "  ./scripts/deploy.sh"
