@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Note Manager</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h1>Note Manager</h1>
+                <button class="add-page-btn" onclick="addPage()">+ Add New Page</button>
+            </div>
+            <div class="pages-list" id="pagesList">
+                <!-- Pages will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Editor -->
+        <div class="editor-container">
+            <div id="emptyState" class="empty-state">
+                <h2>Welcome to Note Manager</h2>
+                <p>Select a page from the sidebar or create a new one</p>
+            </div>
+            <div id="editorArea" style="display: none; flex: 1; flex-direction: column;">
+                <div class="editor-header">
+                    <input type="text" class="title-input" id="pageTitle" placeholder="Page Title">
+                    <div class="editor-actions">
+                        <button class="btn refresh-btn" onclick="refreshPage()">Refresh</button>
+                        <button class="btn save-btn" onclick="savePage()">Save</button>
+                    </div>
+                </div>
+                <div class="editor-content">
+                    <textarea class="content-textarea" id="pageContent" placeholder="Start typing..."></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="statusMessage" class="status-message hidden"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>
