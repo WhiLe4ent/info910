@@ -8,6 +8,8 @@ Note Manager est une application web de gestion de notes simple et intuitive. El
 
 - **Création de pages** : Ajoutez de nouvelles notes en un clic
 - **Édition en temps réel** : Modifiez vos notes facilement avec un éditeur de texte simple
+- **Support Markdown** : Écrivez en Markdown et prévisualisez le rendu en temps réel
+- **Mode Preview** : Basculez entre mode édition et prévisualisation avec un simple bouton
 - **Sauvegarde** : Enregistrez vos modifications dans une base de données MySQL
 - **Suppression** : Supprimez les notes dont vous n'avez plus besoin
 - **Actualisation** : Rechargez une note pour annuler les modifications non sauvegardées
@@ -137,9 +139,66 @@ Les variables suivantes peuvent être configurées dans le fichier `docker-compo
 - `DB_NAME` : Nom de la base de données (par défaut : `mydb`)
 - `PORT` : Port du serveur Node.js (par défaut : `3000`)
 
+## Utilisation de Markdown
+
+Note Manager supporte le format Markdown pour la rédaction de vos notes. Voici quelques exemples de syntaxe :
+
+### Titres
+```markdown
+# Titre niveau 1
+## Titre niveau 2
+### Titre niveau 3
+```
+
+### Formatage de texte
+```markdown
+**Texte en gras**
+*Texte en italique*
+`Code inline`
+```
+
+### Listes
+```markdown
+- Item 1
+- Item 2
+  - Sous-item
+
+1. Premier élément
+2. Deuxième élément
+```
+
+### Code
+```markdown
+\`\`\`javascript
+function hello() {
+  console.log("Hello World!");
+}
+\`\`\`
+```
+
+### Liens et images
+```markdown
+[Texte du lien](https://example.com)
+![Alt text](url-de-image.jpg)
+```
+
+### Autres
+```markdown
+> Citation
+
+---
+Séparateur horizontal
+
+| Colonne 1 | Colonne 2 |
+|-----------|-----------|
+| Données   | Données   |
+```
+
+Pour prévisualiser votre Markdown, cliquez simplement sur le bouton **"Preview"** dans l'éditeur. Cliquez sur **"Edit"** pour revenir en mode édition.
+
 ## Technologies Utilisées
 
-- **Frontend** : HTML5, CSS3, JavaScript (Vanilla JS)
+- **Frontend** : HTML5, CSS3, JavaScript (Vanilla JS), Marked.js (rendu Markdown)
 - **Backend** : Node.js, Express.js
 - **Base de données** : MySQL 8.0
 - **Conteneurisation** : Docker, Docker Compose

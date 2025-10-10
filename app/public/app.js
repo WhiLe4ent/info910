@@ -1,5 +1,6 @@
 let pages = [];
 let currentPageId = null;
+let isPreviewMode = false;
 
 // Load all pages on startup
 async function loadPages() {
@@ -41,6 +42,11 @@ async function selectPage(pageId) {
 
         document.getElementById('emptyState').style.display = 'none';
         document.getElementById('editorArea').style.display = 'flex';
+
+        // Reset to edit mode when selecting a new page
+        if (isPreviewMode) {
+            togglePreview();
+        }
 
         renderPagesList();
     } catch (error) {
@@ -162,6 +168,32 @@ function showStatus(message, type) {
     setTimeout(() => {
         statusEl.classList.add('hidden');
     }, 3000);
+}
+
+// Toggle between edit and preview mode
+function togglePreview() {
+    const textarea = document.getElementById('pageContent');
+    const preview = document.getElementById('markdownPreview');
+    const toggleBtn = document.getElementById('togglePreview');
+
+    isPreviewMode = !isPreviewMode;
+
+    if (isPreviewMode) {
+        // Switch to preview mode
+        const content = textarea.value;
+        preview.innerHTML = marked.parse(content);
+
+        textarea.classList.add('hidden');
+        preview.classList.add('active');
+        toggleBtn.textContent = 'Edit';
+        toggleBtn.classList.add('active');
+    } else {
+        // Switch to edit mode
+        textarea.classList.remove('hidden');
+        preview.classList.remove('active');
+        toggleBtn.textContent = 'Preview';
+        toggleBtn.classList.remove('active');
+    }
 }
 
 // Initialize app

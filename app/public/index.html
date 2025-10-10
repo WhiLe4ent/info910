@@ -29,12 +29,14 @@
                 <div class="editor-header">
                     <input type="text" class="title-input" id="pageTitle" placeholder="Page Title">
                     <div class="editor-actions">
+                        <button class="btn preview-btn" id="togglePreview" onclick="togglePreview()">Preview</button>
                         <button class="btn refresh-btn" onclick="refreshPage()">Refresh</button>
                         <button class="btn save-btn" onclick="savePage()">Save</button>
                     </div>
                 </div>
                 <div class="editor-content">
                     <textarea class="content-textarea" id="pageContent" placeholder="Start typing..."></textarea>
+                    <div class="markdown-preview" id="markdownPreview"></div>
                 </div>
             </div>
         </div>
@@ -42,6 +44,7 @@
 
     <div id="statusMessage" class="status-message hidden"></div>
 
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="app.js"></script>
 </body>
 </html>

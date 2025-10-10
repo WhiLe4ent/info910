@@ -172,6 +172,7 @@ body {
     flex: 1;
     padding: 30px;
     overflow-y: auto;
+    position: relative;
 }
 
 .content-textarea {
@@ -229,4 +230,145 @@ body {
 .status-message.hidden {
     opacity: 0;
     pointer-events: none;
+}
+
+/* Preview Mode Styles */
+.preview-btn {
+    background-color: #17a2b8;
+    color: white;
+}
+
+.preview-btn:hover {
+    background-color: #138496;
+}
+
+.preview-btn.active {
+    background-color: #0c7c8c;
+}
+
+.markdown-preview {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 30px;
+    background-color: white;
+    overflow-y: auto;
+    display: none;
+}
+
+.markdown-preview.active {
+    display: block;
+}
+
+.content-textarea.hidden {
+    display: none;
+}
+
+/* Markdown Preview Content Styles */
+.markdown-preview h1 {
+    font-size: 2em;
+    margin-top: 0.67em;
+    margin-bottom: 0.67em;
+    font-weight: bold;
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 0.3em;
+}
+
+.markdown-preview h2 {
+    font-size: 1.5em;
+    margin-top: 0.75em;
+    margin-bottom: 0.75em;
+    font-weight: bold;
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 0.3em;
+}
+
+.markdown-preview h3 {
+    font-size: 1.17em;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    font-weight: bold;
+}
+
+.markdown-preview p {
+    margin-top: 0;
+    margin-bottom: 16px;
+    line-height: 1.6;
+}
+
+.markdown-preview ul, .markdown-preview ol {
+    margin-bottom: 16px;
+    padding-left: 2em;
+}
+
+.markdown-preview li {
+    margin-bottom: 0.25em;
+}
+
+.markdown-preview code {
+    background-color: #f6f8fa;
+    padding: 0.2em 0.4em;
+    border-radius: 3px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.9em;
+}
+
+.markdown-preview pre {
+    background-color: #f6f8fa;
+    padding: 16px;
+    border-radius: 6px;
+    overflow-x: auto;
+    margin-bottom: 16px;
+}
+
+.markdown-preview pre code {
+    background-color: transparent;
+    padding: 0;
+}
+
+.markdown-preview blockquote {
+    border-left: 4px solid #e0e0e0;
+    padding-left: 16px;
+    margin-left: 0;
+    margin-bottom: 16px;
+    color: #666;
+}
+
+.markdown-preview a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.markdown-preview a:hover {
+    text-decoration: underline;
+}
+
+.markdown-preview img {
+    max-width: 100%;
+    height: auto;
+}
+
+.markdown-preview table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-bottom: 16px;
+}
+
+.markdown-preview table th,
+.markdown-preview table td {
+    border: 1px solid #e0e0e0;
+    padding: 8px 12px;
+}
+
+.markdown-preview table th {
+    background-color: #f6f8fa;
+    font-weight: bold;
+}
+
+.markdown-preview hr {
+    border: none;
+    border-top: 2px solid #e0e0e0;
+    margin: 24px 0;
 }
