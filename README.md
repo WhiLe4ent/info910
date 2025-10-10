@@ -47,7 +47,7 @@ Le projet est composé de trois parties principales :
 
 2. **Démarrez l'application** :
    ```bash
-   docker-compose up --build
+   docker compose up --build -d
    ```
 
 3. **Accédez à l'application** :
@@ -56,7 +56,7 @@ Le projet est composé de trois parties principales :
 4. **Arrêter l'application** :
    ```bash
    # Appuyez sur Ctrl+C dans le terminal, puis :
-   docker-compose down
+   docker compose down -v
    ```
 
 ### Méthode 2 : Développement local (sans Docker)
@@ -110,7 +110,7 @@ info910/
 ├── database/
 │   ├── init.sql            # Script d'initialisation de la base de données
 │   └── Dockerfile          # Configuration Docker pour MySQL
-├── docker-compose.yml      # Orchestration des services
+├──  .yml      # Orchestration des services
 └── README.md               # Ce fichier
 ```
 
@@ -128,7 +128,7 @@ info910/
 
 ### Variables d'environnement
 
-Les variables suivantes peuvent être configurées dans le fichier `docker-compose.yml` :
+Les variables suivantes peuvent être configurées dans le fichier ` .yml` :
 
 - `DB_HOST` : Hôte de la base de données (par défaut : `database`)
 - `DB_PORT` : Port de la base de données (par défaut : `3306`)
