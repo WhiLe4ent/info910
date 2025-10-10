@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp
+  template:
+    metadata:
+      labels:
+        app: myapp
+    spec:
+      containers:
+      - name: myapp
+        image: mynode-app:1.0
+        ports:
+        - containerPort: 3000
+        env:
+        - name: DB_HOST
+          value: "mydb-service"
+        - name: DB_USER
+          value: "user"
+        - name: DB_PASSWORD
+          value: "password"
+        - name: DB_NAME
+          value: "mydb"
