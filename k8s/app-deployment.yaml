@@ -22,8 +22,17 @@ spec:
         - name: DB_HOST
           value: "note-manager-db-service"
         - name: DB_USER
-          value: "user"
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: mysql-user
         - name: DB_PASSWORD
-          value: "password"
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: mysql-password
         - name: DB_NAME
-          value: "mydb"
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: mysql-database

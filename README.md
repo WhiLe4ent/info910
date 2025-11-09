@@ -47,6 +47,43 @@ Le projet est composé de trois parties principales :
 
 ### Méthode 1 : Avec Minikube (Kubernetes) - Recommandé
 
+#### 🔐 Configuration des secrets
+
+L'application utilise des **Kubernetes Secrets** pour stocker les informations sensibles comme les identifiants de base de données.
+
+**Important** : Avant le premier déploiement, vous devez configurer vos identifiants dans le fichier `k8s/db-secret.yaml`.
+
+Par défaut, le fichier contient :
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: db-secret
+type: Opaque
+stringData:
+  mysql-root-password: "rootpassword"
+  mysql-database: "mydb"
+  mysql-user: "user"
+  mysql-password: "password"
+```
+
+**Recommandations de sécurité** :
+- Modifiez les mots de passe par défaut avant le déploiement
+- Ne committez JAMAIS ce fichier avec des identifiants réels dans Git
+- Pour la production, utilisez des outils comme `kubectl create secret` ou des gestionnaires de secrets externes
+- Ajoutez `k8s/db-secret.yaml` à votre `.gitignore` si vous utilisez des identifiants réels
+
+**Pour créer un secret manuellement** :
+```bash
+kubectl create secret generic db-secret \
+  --from-literal=mysql-root-password=YOUR_ROOT_PASSWORD \
+  --from-literal=mysql-database=mydb \
+  --from-literal=mysql-user=YOUR_USER \
+  --from-literal=mysql-password=YOUR_PASSWORD
+```
+
+---
+
 #### 🚀 Déploiement automatique avec scripts
 
 Pour simplifier le déploiement, des scripts automatisés sont disponibles :
@@ -135,6 +172,10 @@ note-manager-db      latest    ...            ...             ...
 Depuis la racine du projet :
 
 ```bash
+# Créer d'abord le secret
+kubectl apply -f k8s/db-secret.yaml
+
+# Puis déployer les services
 kubectl apply -f k8s/db-deployment.yaml
 kubectl apply -f k8s/db-service.yaml
 kubectl apply -f k8s/app-deployment.yaml
@@ -267,6 +308,7 @@ info910/
 │   ├── init.sql            # Script d'initialisation de la base de données
 │   └── Dockerfile          # Configuration Docker pour MySQL
 ├── k8s/
+│   ├── db-secret.yaml          # Secret pour les identifiants de base de données
 │   ├── app-deployment.yaml     # Deployment de l'application
 │   ├── app-service.yaml        # Service de l'application
 │   ├── db-deployment.yaml      # Deployment de la base de données
@@ -292,9 +334,20 @@ info910/
 
 ## Configuration
 
-### Variables d'environnement
+### Kubernetes Secrets
 
-Les variables suivantes peuvent être configurées dans le fichier ` .yml` :
+Pour Kubernetes, les identifiants de base de données sont stockés dans le fichier `k8s/db-secret.yaml` :
+
+- `mysql-root-password` : Mot de passe root MySQL (par défaut : `rootpassword`)
+- `mysql-database` : Nom de la base de données (par défaut : `mydb`)
+- `mysql-user` : Utilisateur de la base de données (par défaut : `user`)
+- `mysql-password` : Mot de passe de l'utilisateur (par défaut : `password`)
+
+**Note de sécurité** : Ces valeurs sont référencées automatiquement par les déploiements via `secretKeyRef`.
+
+### Variables d'environnement (Docker Compose)
+
+Les variables suivantes peuvent être configurées dans le fichier `docker-compose.yml` :
 
 - `DB_HOST` : Hôte de la base de données (par défaut : `database`)
 - `DB_PORT` : Port de la base de données (par défaut : `3306`)

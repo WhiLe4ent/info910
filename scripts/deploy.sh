@@ -50,6 +50,9 @@ echo ""
 # 5. Déploiement sur Kubernetes
 echo "📌 Étape 5: Déploiement sur Kubernetes..."
 
+echo "  🔐 Création du secret pour les identifiants de la base de données..."
+kubectl apply -f k8s/db-secret.yaml
+
 echo "  📦 Déploiement de la base de données..."
 kubectl apply -f k8s/db-deployment.yaml
 kubectl apply -f k8s/db-service.yaml
