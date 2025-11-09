@@ -1,5 +1,7 @@
 # Note Manager
 
+**Auteurs :** Elias CUZEAU et Achille GRAVOUIL
+
 ## Description
 
 Note Manager est une application web de gestion de notes simple et intuitive. Elle permet de créer, éditer, sauvegarder et supprimer des notes dans une interface utilisateur moderne et réactive.
@@ -66,12 +68,6 @@ stringData:
   mysql-user: "user"
   mysql-password: "password"
 ```
-
-**Recommandations de sécurité** :
-- Modifiez les mots de passe par défaut avant le déploiement
-- Ne committez JAMAIS ce fichier avec des identifiants réels dans Git
-- Pour la production, utilisez des outils comme `kubectl create secret` ou des gestionnaires de secrets externes
-- Ajoutez `k8s/db-secret.yaml` à votre `.gitignore` si vous utilisez des identifiants réels
 
 **Pour créer un secret manuellement** :
 ```bash
