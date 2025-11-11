@@ -105,6 +105,57 @@ chmod +x scripts/*.sh
 ./scripts/delete.sh
 ```
 
+**ou utilisé le Makefile :**
+```bash
+
+# Start (start minikube build and deploy)
+make start
+
+# stop (stop the application)
+make stop 
+
+# Build 
+make build
+
+# Déployer l'application
+make deploy
+
+# Restart (stop then re deploy)
+make restart
+
+# Delete application and stop minikube
+make delete
+
+# Clean (delete all the cluster)
+make clean
+
+# status
+make status 
+
+# Open the app
+make open
+
+# Metrics
+make metrics
+
+# Describe app deployment
+make describe-app
+
+# Describe db
+make describe-db
+
+# Open shell in app pod
+make shell-app
+
+# Open shell in db pod
+make shell-db
+
+# Connect to MySQL console
+make db-console
+
+
+```
+
 ---
 
 #### 📋 Déploiement manuel étape par étape
@@ -315,6 +366,7 @@ info910/
 │   ├── restart.sh          # Script de redémarrage
 │   └── delete.sh           # Script de suppression des ressources
 ├── docker-compose.yml      # Orchestration Docker Compose
+├── Makefile
 └── README.md               # Ce fichier
 ```
 
