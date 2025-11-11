@@ -25,7 +25,7 @@ jobs:
           
       - name: Install dependencies
         working-directory: ./app
-        run: npm ci
+        run: npm i
         
       - name: Lint JavaScript
         working-directory: ./app
@@ -45,7 +45,7 @@ jobs:
           
       - name: Install dependencies
         working-directory: ./app
-        run: npm ci
+        run: npm i
         
       - name: Run tests
         working-directory: ./app
@@ -147,8 +147,8 @@ jobs:
     needs: security-scan
     if: github.ref == 'refs/heads/main'
     environment:
-      name: production
-      url: https://note-manager.example.com
+      name: "production"
+      url: "https://note-manager.example.com"
     steps:
       - uses: actions/checkout@v3
       
