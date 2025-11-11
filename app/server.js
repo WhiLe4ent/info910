@@ -21,6 +21,59 @@ const pool = mysql.createPool({
   queueLimit: 0
 });
 
+// Health check endpoints
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+app.get('/ready', async (req, res) => {
+  try {
+    // Test database connection
+    await pool.query('SELECT 1');
+    res.status(200).json({ 
+      status: 'ready', 
+      database: 'connected',
+      timestamp: new Date().toISOString() 
+    });
+  } catch (error) {
+    console.error('Readiness check failed:', error);
+    res.status(503).json({ 
+      status: 'not ready', 
+      database: 'disconnected',
+      error: error.message 
+    });
+  }
+});
+
+// Metrics endpoint (optionnel mais utile)
+app.get('/metrics', async (req, res) => {
+  try {
+    const [poolStatus] = await pool.query(
+      'SHOW STATUS WHERE Variable_name IN ("Threads_connected", "Max_used_connections")'
+    );
+    const [dbSize] = await pool.query(
+      `SELECT table_schema AS "database", 
+       SUM(data_length + index_length) / 1024 / 1024 AS "size_mb" 
+       FROM information_schema.tables 
+       WHERE table_schema = ? 
+       GROUP BY table_schema`,
+      [process.env.DB_NAME || 'mydb']
+    );
+    
+    res.json({
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime(),
+      memory: process.memoryUsage(),
+      database: {
+        poolStatus,
+        size: dbSize
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // API Routes for Note Manager
 
 // Get all pages
@@ -103,6 +156,13 @@ app.delete('/api/pages/:id', async (req, res) => {
 // Serve index page
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// Graceful shutdown
+process.on('SIGTERM', async () => {
+  console.log('SIGTERM signal received: closing HTTP server');
+  await pool.end();
+  process.exit(0);
 });
 
 app.listen(PORT, () => {
