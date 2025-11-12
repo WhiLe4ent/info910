@@ -153,6 +153,12 @@ make shell-db
 # Connect to MySQL console
 make db-console
 
+# Logs 
+make logs
+
+# Create port forward to the application
+make port-forward
+
 
 ```
 
